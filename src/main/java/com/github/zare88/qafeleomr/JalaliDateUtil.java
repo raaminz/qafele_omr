@@ -5,7 +5,7 @@ import com.ibm.icu.util.ULocale;
 
 public class JalaliDateUtil {
 
-    private Calendar getCalendar(){
+    private Calendar getCalendar() {
         return Calendar.getInstance(new ULocale("fa_IR"));
     }
 
@@ -13,14 +13,18 @@ public class JalaliDateUtil {
      * @param month starts from 0
      */
     public int getDayOfYear(int month, int dayOfMonth) {
-        Calendar calendar = getCalendar();
-        calendar.set(Calendar.MONTH , month);
-        calendar.set(Calendar.DAY_OF_MONTH , dayOfMonth);
+        var calendar = getCalendar();
+        calendar.set(Calendar.MONTH, month);
+        calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth);
         return calendar.get(java.util.Calendar.DAY_OF_YEAR);
     }
 
-    public int getTodayDayOfYear() {
-        Calendar calendar = getCalendar();
-        return calendar.get(java.util.Calendar.DAY_OF_YEAR);
+    public int getCurrentYear() {
+        return getCalendar().get(java.util.Calendar.YEAR);
     }
+
+    public int getTodayDayOfYear() {
+        return getCalendar().get(java.util.Calendar.DAY_OF_YEAR);
+    }
+
 }

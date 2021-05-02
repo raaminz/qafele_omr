@@ -12,11 +12,11 @@ public class QafeleOmrStatusFormatter {
 
     public String formatProgress(int[] yearProgress) {
         Objects.requireNonNull(yearProgress);
-        if(yearProgress.length > ARRAY_SIZE){
+        if (yearProgress.length > ARRAY_SIZE) {
             throw new IllegalArgumentException();
         }
         return Arrays.stream(yearProgress)
-                .mapToObj(value -> value == 1 ? COMPLETE_BLOCK : BASE_BLOCK )
+                .mapToObj(value -> value == 1 ? COMPLETE_BLOCK : BASE_BLOCK)
                 .collect(Collectors.joining());
     }
 

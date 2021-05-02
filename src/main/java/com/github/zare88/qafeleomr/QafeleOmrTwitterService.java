@@ -13,7 +13,7 @@ public class QafeleOmrTwitterService {
     private final Twitter twitter;
 
     public QafeleOmrTwitterService(String consumerKey, String consumerSecret,
-                                   String token, String tokenSecret){
+                                   String token, String tokenSecret) {
         this.twitter = initTwitterBot(consumerKey, consumerSecret, token, tokenSecret);
     }
 
@@ -22,7 +22,7 @@ public class QafeleOmrTwitterService {
     }
 
     public void tweet(String status) throws QafeleOmrTwitterException {
-        if(status == null || status.trim().isEmpty()){
+        if (status == null || status.trim().isEmpty()) {
             throw new IllegalArgumentException("Status cannot be null or empty");
         }
         try {
@@ -33,13 +33,13 @@ public class QafeleOmrTwitterService {
     }
 
     private Twitter initTwitterBot(String consumerKey, String consumerSecret,
-                                String token, String tokenSecret) {
-        Twitter twitter = TwitterFactory.getSingleton();
-        twitter.setOAuthConsumer(Objects.requireNonNull(consumerKey),
+                                   String token, String tokenSecret) {
+        var twitterObj = TwitterFactory.getSingleton();
+        twitterObj.setOAuthConsumer(Objects.requireNonNull(consumerKey),
                 Objects.requireNonNull(consumerSecret));
-        AccessToken accessToken = new AccessToken(Objects.requireNonNull(token),
+        var accessToken = new AccessToken(Objects.requireNonNull(token),
                 Objects.requireNonNull(tokenSecret));
-        twitter.setOAuthAccessToken(accessToken);
-        return twitter;
+        twitterObj.setOAuthAccessToken(accessToken);
+        return twitterObj;
     }
 }

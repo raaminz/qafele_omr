@@ -2,6 +2,7 @@ package com.github.zare88.qafeleomr;
 
 import com.github.zare88.qafeleomr.exception.QafeleOmrTwitterException;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.platform.runner.JUnitPlatform;
@@ -13,33 +14,34 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
 @RunWith(JUnitPlatform.class)
-public class MainIntegrationTest {
+class MainIntegrationTest {
 
     @Mock
-    private JalaliDateUtil jalaliDateUtil;
+    JalaliDateUtil jalaliDateUtil;
 
     @Mock
-    private QafeleOmrTwitterService twitterService;
+    QafeleOmrTwitterService twitterService;
 
     @InjectMocks
-    private Main main;
+    Main main;
 
-    @Test
-    public void todayIs1stOfOrdibehesht_getTweetStatus_messageIsCorrect(){
+    @BeforeEach
+    void beforeEach() {
         Mockito.when(jalaliDateUtil.getTodayDayOfYear()).thenReturn(32);
-        String actualStatus = main.getTweetStatus();
-
-        String expectedStatus = "▉▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ 8%";
-        Assertions.assertEquals(expectedStatus , actualStatus);
+        Mockito.when(jalaliDateUtil.getCurrentYear()).thenReturn(1400);
     }
+
     @Test
-    public void todayIs1stOfOrdibehesht_sendStatus_messageSent() throws QafeleOmrTwitterException {
-        Mockito.when(jalaliDateUtil.getTodayDayOfYear()).thenReturn(32);
+    void todayIs1stOfOrdibehesht_getTweetStatus_messageIsCorrect() {
+        String actualStatus = main.getTweetStatus();
+        String expectedStatus = "▉▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ 8% / 1400";
+        Assertions.assertEquals(expectedStatus, actualStatus);
+    }
+
+    @Test
+    void todayIs1stOfOrdibehesht_sendStatus_messageSent() throws QafeleOmrTwitterException {
         main.updateStatus();
-
-        String expectedStatus = "▉▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ 8%";
-
+        String expectedStatus = "▉▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁▁ 8% / 1400";
         Mockito.verify(twitterService).tweet(expectedStatus);
     }
-
 }

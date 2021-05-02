@@ -6,18 +6,18 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class ProgressYearCalculatorTest {
+class ProgressYearCalculatorTest {
 
-    private ProgressYearCalculator calculator;
+    ProgressYearCalculator calculator;
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         calculator = new ProgressYearCalculator();
     }
 
     @ParameterizedTest
     @ValueSource(ints = {0, 367})
-    public void invalidDayOfYear_calculatePercentage_throwException(int invalidValue) {
+    void invalidDayOfYear_calculatePercentage_throwException(int invalidValue) {
         Assertions.assertThrows(IllegalArgumentException.class
                 , () -> calculator.calculateDaysPassedPercentage(invalidValue)
         );
@@ -25,34 +25,42 @@ public class ProgressYearCalculatorTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1, 366})
-    public void validDayOfYear_calculatePercentage_successful(int invalidValue) {
-         calculator.calculateDaysPassedPercentage(invalidValue);
+    void validDayOfYear_calculatePercentage_successful(int invalidValue) {
+        var result = calculator.calculateDaysPassedPercentage(invalidValue);
+        Assertions.assertTrue(result >= 0);
     }
 
     @Test
-    public void whenCalculatePercentageThenCorrectResult() {
+    void calculateDaysPassedPercentage_successful() {
         int actualPercentage = calculator.calculateDaysPassedPercentage(200);
         Assertions.assertEquals(54, actualPercentage);
     }
 
     @Test
-    public void whenGetYearProgressThenReturnAnArrayWithSize20() {
+    void getYearProgress_returnAnArrayWithSize20() {
         int[] array = calculator.getYearProgress(1);
         Assertions.assertEquals(20, array.length);
     }
 
     @Test
-    public void givenDayIs200WhenGetYearProgressThenReturnArrayHas10FullBlocks() {
+    void dayIs200_getYearProgress_returnArrayHas10FullBlocks() {
         int[] array = calculator.getYearProgress(200);
         Assertions.assertArrayEquals(new int[]{1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
                 , array);
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-1, 367})
-    public void givenInvalidInputsWhenGetYearProgressThenThrowException(int value) {
+    @ValueSource(ints = {0, 367})
+    void invalidInputs_getYearProgress_throwException(int value) {
         Assertions.assertThrows(IllegalArgumentException.class,
                 () -> calculator.getYearProgress(value));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = {1, 366})
+    void inputs_getYearProgress_successful(int value) {
+        var result = calculator.getYearProgress(value);
+        Assertions.assertNotNull(result);
     }
 
 }

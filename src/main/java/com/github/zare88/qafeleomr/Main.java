@@ -12,44 +12,43 @@ public class Main {
     private final JalaliDateUtil jalaliDateUtil;
     private final QafeleOmrTwitterService twitterService;
 
-    private static String getKey(String key){
-        return System.getenv().get(key);
-    }
-    public Main(){
+    public Main() {
         this.jalaliDateUtil = new JalaliDateUtil();
         this.twitterService = new QafeleOmrTwitterService(getKey("CONSUMER_KEY"), getKey("CONSUMER_SECRET"),
                 getKey("TOKEN"), getKey("TOKEN_SECRET"));
     }
 
-    Main(JalaliDateUtil jalaliDateUtil , QafeleOmrTwitterService twitterService){
+    Main(JalaliDateUtil jalaliDateUtil, QafeleOmrTwitterService twitterService) {
         this.jalaliDateUtil = jalaliDateUtil;
         this.twitterService = twitterService;
     }
 
-    public String getTweetStatus() {
-        int today = jalaliDateUtil.getTodayDayOfYear();
-        ProgressYearCalculator calculator = new ProgressYearCalculator();
-
-        QafeleOmrStatusFormatter formatter = new QafeleOmrStatusFormatter();
-        String percentStr = formatter.formatPercent(calculator.calculateDaysPassedPercentage(today));
-        String progressYearStr = formatter.formatProgress(calculator.getYearProgress(today));
-
-        return "%s %s".formatted(progressYearStr ,percentStr);
-    }
-
-    public void updateStatus() throws QafeleOmrTwitterException {
-        String status = getTweetStatus();
-        LOG.log(Level.INFO , () -> "Today's status is %s".formatted(status));
-        twitterService.tweet(status);
+    private static String getKey(String key) {
+        return System.getenv().get(key);
     }
 
     public static void main(String[] args) {
         try {
             LOG.info("QafeleOmr tweeter sender is trying to produce the status and sent it.");
             new Main().updateStatus();
-            LOG.log(Level.INFO , "Status updated successfully. Done.");
+            LOG.log(Level.INFO, "Status updated successfully. Done.");
         } catch (QafeleOmrTwitterException e) {
-            LOG.log(Level.SEVERE,"Trouble when sending today's tweet" , e);
+            LOG.log(Level.SEVERE, "Trouble when sending tweet of day", e);
         }
+    }
+
+    public String getTweetStatus() {
+        int today = jalaliDateUtil.getTodayDayOfYear();
+        var calculator = new ProgressYearCalculator();
+        var formatter = new QafeleOmrStatusFormatter();
+        String percentStr = formatter.formatPercent(calculator.calculateDaysPassedPercentage(today));
+        String progressYearStr = formatter.formatProgress(calculator.getYearProgress(today));
+        return "%s %s / %d".formatted(progressYearStr, percentStr, jalaliDateUtil.getCurrentYear());
+    }
+
+    public void updateStatus() throws QafeleOmrTwitterException {
+        String status = getTweetStatus();
+        LOG.log(Level.INFO, () -> "Today's status is %s".formatted(status));
+        twitterService.tweet(status);
     }
 }
