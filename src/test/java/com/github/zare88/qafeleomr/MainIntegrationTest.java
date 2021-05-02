@@ -18,7 +18,7 @@ public class MainIntegrationTest {
     @Mock
     private JalaliDateUtil jalaliDateUtil;
 
-    @Mock(name = "twitterService")
+    @Mock
     private QafeleOmrTwitterService twitterService;
 
     @InjectMocks

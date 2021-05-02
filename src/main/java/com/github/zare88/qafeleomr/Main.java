@@ -2,7 +2,12 @@ package com.github.zare88.qafeleomr;
 
 import com.github.zare88.qafeleomr.exception.QafeleOmrTwitterException;
 
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 public class Main {
+
+    private static final Logger LOG = Logger.getLogger(Main.class.getName());
 
     private final JalaliDateUtil jalaliDateUtil;
     private final QafeleOmrTwitterService twitterService;
@@ -29,19 +34,22 @@ public class Main {
         String percentStr = formatter.formatPercent(calculator.calculateDaysPassedPercentage(today));
         String progressYearStr = formatter.formatProgress(calculator.getYearProgress(today));
 
-         return "%s %s".formatted(progressYearStr ,percentStr);
+        return "%s %s".formatted(progressYearStr ,percentStr);
     }
 
     public void updateStatus() throws QafeleOmrTwitterException {
         String status = getTweetStatus();
+        LOG.log(Level.INFO , () -> "Today's status is %s".formatted(status));
         twitterService.tweet(status);
     }
 
     public static void main(String[] args) {
         try {
+            LOG.info("QafeleOmr tweeter sender is trying to produce the status and sent it.");
             new Main().updateStatus();
+            LOG.log(Level.INFO , "Status updated successfully. Done.");
         } catch (QafeleOmrTwitterException e) {
-            e.printStackTrace();
+            LOG.log(Level.SEVERE,"Trouble when sending today's tweet" , e);
         }
     }
 }
