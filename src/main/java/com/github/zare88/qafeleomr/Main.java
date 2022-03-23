@@ -2,6 +2,8 @@ package com.github.zare88.qafeleomr;
 
 import com.github.zare88.qafeleomr.exception.QafeleOmrTwitterException;
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,10 +31,15 @@ public class Main {
 
     public static void main(String[] args) {
         try {
-            LOG.info("QafeleOmr tweeter sender is trying to produce the status and sent it.");
-            new Main().updateStatus();
-            LOG.log(Level.INFO, "Status updated successfully. Done.");
-        } catch (QafeleOmrTwitterException e) {
+            DayOfWeek dayOfWeek = LocalDate.now().getDayOfWeek();
+            if (dayOfWeek == DayOfWeek.SUNDAY || dayOfWeek == DayOfWeek.WEDNESDAY) {
+                LOG.info("QafeleOmr tweeter sender is trying to produce the status and sent it.");
+                new Main().updateStatus();
+                LOG.log(Level.INFO, "Status updated successfully. Done.");
+            } else {
+                LOG.info("QafeleOmr only send tweets on Wednesdays and Sundays");
+            }
+        } catch (Exception e) {
             LOG.log(Level.SEVERE, "Trouble when sending tweet of day", e);
         }
     }
